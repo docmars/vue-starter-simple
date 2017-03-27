@@ -32,6 +32,7 @@
     "node-sass": "^4.5.0",
     "sass-loader": "^5.0.1",
     {{/sass}}
+    "style-loader": "^0.16.0",
     "raw-loader": "^0.5.1",
     "vue-loader": "^11.1.4",
     "vue-template-compiler": "^2.2.1",

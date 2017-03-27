@@ -28,6 +28,14 @@ module.exports = {
         }
       },
       {
+        test: /\.css$/,
+        loader: 'css-loader'
+      },
+      {
+        test: /\.(sass|scss)$/,
+        loader: sassLoader()
+      },
+      {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/
@@ -44,9 +52,10 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      'components': 'src/components',
-      'assets': 'src/assets',
-      'store': 'src/store'
+      'src': path.resolve(__dirname, 'src'),
+      'components': path.resolve(__dirname, 'src/components'),
+      'assets': path.resolve(__dirname, 'src/assets'),
+      'store': path.resolve(__dirname, 'src/store')
     }
   },
   devServer: {
@@ -85,4 +94,17 @@ if (process.env.NODE_ENV === 'production') {
       minimize: true
     })
   ])
+}
+
+function sassLoader() {
+  let loader
+  if (process.env.NODE_ENV === 'production') {
+    loader = ExtractTextPlugin.extract({
+      fallbackLoader: 'style-loader',
+      loader: ['css-loader?sourceMap', 'resolve-url-loader', 'sass-loader?sourceMap']
+    })
+  } else {
+    loader = ['style-loader', 'css-loader', 'sass-loader']
+  }
+  return loader
 }
