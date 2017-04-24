@@ -48,7 +48,13 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
-      }
+      },
+
+      // Fonts
+      { test: /\.woff$/, loader: 'url-loader?limit=65000&mimetype=application/font-woff' },
+      { test: /\.woff2$/, loader: 'url-loader?limit=65000&mimetype=application/font-woff2' },
+      { test: /\.[ot]tf$/, loader: 'url-loader?limit=65000&mimetype=application/octet-stream' },
+      { test: /\.eot$/, loader: 'url-loader?limit=65000&mimetype=application/vnd.ms-fontobject' }
     ]
   },
   resolve: {
