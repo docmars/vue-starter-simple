@@ -1,13 +1,15 @@
 var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
-    filename: 'build.js'
+    publicPath: './',
+    filename: '[hash].[name].js'
   },
   module: {
     rules: [
@@ -60,14 +62,20 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    noInfo: true,
+    publicPath: '/'
   },
   performance: {
     hints: false
   },
   devtool: '#eval-source-map',
   plugins: [
+    new ExtractTextPlugin({
+      filename: '[name].[contenthash].css',
+      allChunks: false
+    }),
     new HtmlWebpackPlugin({
+      template: 'index.ejs',
       filename: 'index.html',
       inject: true,
       hash: true
@@ -84,15 +92,43 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
+    new CleanWebpackPlugin(['dist'], {}),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
         warnings: false
       }
     }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: function (module, count) {
+        // any required modules inside node_modules are extracted to vendor
+        return (
+          module.resource &&
+          /\.js$/.test(module.resource) &&
+          module.resource.indexOf(
+            path.join(__dirname, 'node_modules')
+          ) === 0
+        )
+      }
+    }),
+    new HtmlWebpackPlugin({
+      template: 'index.ejs',
+      filename: 'index.html',
+      inject: true,
+      hash: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+    }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
-    })
+    }),
+    new ExtractTextPlugin('styles.css')
   ])
 }
 
