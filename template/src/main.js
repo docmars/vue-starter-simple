@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import { sync } from 'vuex-router-sync'
 
 // Stylesheets
+import 'normalize.css/normalize.css'
 import 'src/scss/main.scss'
 
 // App
